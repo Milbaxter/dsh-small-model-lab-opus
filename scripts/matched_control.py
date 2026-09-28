@@ -26,12 +26,13 @@ def run_control(first):
   assert existing is None or existing[0]==group,'Primary already belongs to a different control budget'
   c.execute('insert or ignore into budget_groups values(?,?,?)',(group,100000,20))
   c.execute('insert or ignore into budget_members values(?,?)',(first['run'],group))
- attempts=[first]
+ attempts=[first];complete=True
  for n in range(1,5):
   with sqlite3.connect(state/'spend.sqlite') as c:
    count,tokens=c.execute('select count(*),coalesce(sum(input+output),0) from calls where run in (select run from budget_members where group_id=?)',(group,)).fetchone()
    global_cost=c.execute('select coalesce(sum(case when state="done" then cost else reserve end),0) from calls').fetchone()[0]
-  if count>=20 or tokens>=100000 or global_cost>=17.75:break
+  if count>=20 or tokens>=100000:break
+  if global_cost>=17.75:complete=False;break
   sweep=f'raw-{opts.sweep}-attempt{n}';seed=rep+100*n;rid=f'{sweep}-{task["id"]}-standard-{seed}'
   with sqlite3.connect(state/'spend.sqlite') as c:c.execute('insert or ignore into budget_members values(?,?)',(rid,group))
   args=SimpleNamespace(sweep=sweep,seed_offset=n*100,state=state,root=root,bank=opts.bank.resolve(),external_profile=None)
@@ -42,6 +43,8 @@ def run_control(first):
  with sqlite3.connect(state/'spend.sqlite') as c:
   usage=c.execute('select count(*),coalesce(sum(input),0),coalesce(sum(output),0),coalesce(sum(case when state="done" then cost else reserve end),0) from calls where run in (select run from budget_members where group_id=?)',(group,)).fetchone()
  result.update(dict(zip(['calls','input_tokens','output_tokens','cost_usd'],usage)))
+ if attempts[-1].get('failure_tag')=='MAX_TURNS' and usage[0]<20 and usage[1]+usage[2]<100000:complete=False
+ result['control_complete']=complete
  dest.mkdir(parents=True,exist_ok=True);tmp=dest/'result.tmp';tmp.write_text(json.dumps(result));tmp.rename(dest/'result.json')
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=opts.workers) as pool:list(pool.map(run_control,primary))
