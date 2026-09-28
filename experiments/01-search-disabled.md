@@ -17,3 +17,16 @@ Runtime: deepseek-harness-sdk 0.1.5rc1. Model: qwen/qwen3-8b; OpenRouter alibaba
 Task bank: 64 tasks, 32 dev / 16 held-out / 16 transfer, frozen commit `17d3d4653992dc1f1a1334ac6a5a54f305121f50`. Budgets: 100,000 cumulative-token stop-before-next-call threshold, 20 API calls, 450 seconds per task, 150 seconds per turn. Same budgets in both arms. Smoke: eight balanced dev tasks × one run. Formal dev: 32 × five × two interleaved arms. Hidden evaluation follows only if dev clears the preregistered gate.
 
 Pending fields: dev rates/difference/CI; held-out rates/difference/CI; transfer and second-model evidence; matched-budget control; tokens per solve/schema overhead; dev failure shifts and newly solved/regressed IDs; decision; trace locations. Missing gates will be recorded as untested, never passed.
+
+Critical reviewer pass after runtime implementation, before formal dev scores were inspected:
+
+- Utility: prevent repeated calls to a search provider that has no credential, particularly when the needed information is local.
+- Fit: DSH already provides a registration switch. A single flag is sufficient; no new plugin or task-solving logic is needed.
+- Correctness: the pinned release supports the flag. Eight smoke runs completed without infrastructure errors. The actual native request exposes 24 tools, omits `web_search`, and retains `web_fetch`. Smoke score was 2/8 and is not evidence of uplift.
+- Autonomy: permissions, scope and sandbox limits are unchanged. The predicted benefit is fewer dead ends, not extra authority.
+- Cost: no dependencies, storage or policy text are added. Tool/schema overhead is removed; its measured token effect and total tokens per solve are deferred to the completed comparison.
+- Regression risk: this setting removes useful capability when a search credential is available. It applies to the tested unconfigured-search setup; reverting the flag restores registration.
+- Evidence: configuration loading and model-facing tool visibility are verified. Improved task completion remains a hypothesis pending k=5 results.
+- Disconfirmation: reject promotion if the preregistered dev confidence gate or any subsequent gate fails. Plain standard DSH is the unchanged alternative; reduced tool availability could harm discovery or alter useful model behavior.
+
+Reviewer verdict: accept for evaluation, not promotion. Confidence is high in mechanical correctness and low in predicted capability gain before formal scoring. Author and reviewer passes use the same frontier model, as permitted by the upstream judgment rubric.
