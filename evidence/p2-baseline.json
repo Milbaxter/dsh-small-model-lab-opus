@@ -1,0 +1,454 @@
+{
+  "sweep": "p2-baseline",
+  "runs": 960,
+  "cost_usd": 8.990236588,
+  "arms": {
+    "autonomy": {
+      "dev": {
+        "runs": 160,
+        "tasks": 32,
+        "repetitions": [
+          5
+        ],
+        "passed": 54,
+        "pass_rate": 0.3375,
+        "task_bootstrap_ci": [
+          0.20625,
+          0.475
+        ],
+        "tokens": 14115065,
+        "tokens_per_solve": 261390.09259259258,
+        "cost_usd": 1.887998039,
+        "mean_seconds": 33.0647287979722,
+        "mean_calls": 9.375,
+        "compactions": 38,
+        "tool_errors": 234,
+        "failures": {
+          "REASONING": 62,
+          "MAX_TURNS": 41,
+          "INFRA": 3
+        },
+        "families": {
+          "completion": {
+            "n": 40,
+            "passed": 5
+          },
+          "context": {
+            "n": 40,
+            "passed": 35
+          },
+          "memory": {
+            "n": 40,
+            "passed": 12
+          },
+          "recovery": {
+            "n": 40,
+            "passed": 2
+          }
+        }
+      },
+      "held-out": {
+        "runs": 80,
+        "tasks": 16,
+        "repetitions": [
+          5
+        ],
+        "passed": 23,
+        "pass_rate": 0.2875,
+        "task_bootstrap_ci": [
+          0.125,
+          0.475
+        ],
+        "tokens": 6535968,
+        "tokens_per_solve": 284172.52173913043,
+        "cost_usd": 1.061890824,
+        "mean_seconds": 31.00062004029751,
+        "mean_calls": 8.7875,
+        "compactions": 17,
+        "tool_errors": 85,
+        "failures": {
+          "REASONING": 35,
+          "MAX_TURNS": 17,
+          "INFRA": 5
+        },
+        "families": {
+          "completion": {
+            "n": 20,
+            "passed": 1
+          },
+          "context": {
+            "n": 20,
+            "passed": 16
+          },
+          "memory": {
+            "n": 20,
+            "passed": 5
+          },
+          "recovery": {
+            "n": 20,
+            "passed": 1
+          }
+        }
+      },
+      "transfer": {
+        "runs": 80,
+        "tasks": 16,
+        "repetitions": [
+          5
+        ],
+        "passed": 20,
+        "pass_rate": 0.25,
+        "task_bootstrap_ci": [
+          0.0875,
+          0.4375
+        ],
+        "tokens": 6243992,
+        "tokens_per_solve": 312199.6,
+        "cost_usd": 0.94922562,
+        "mean_seconds": 32.94974540770054,
+        "mean_calls": 8.3125,
+        "compactions": 18,
+        "tool_errors": 69,
+        "failures": {
+          "REASONING": 44,
+          "MAX_TURNS": 12,
+          "INFRA": 4
+        },
+        "families": {
+          "completion": {
+            "n": 20,
+            "passed": 2
+          },
+          "context": {
+            "n": 20,
+            "passed": 13
+          },
+          "memory": {
+            "n": 20,
+            "passed": 5
+          },
+          "recovery": {
+            "n": 20,
+            "passed": 0
+          }
+        }
+      }
+    },
+    "sdk-minimal": {
+      "dev": {
+        "runs": 160,
+        "tasks": 32,
+        "repetitions": [
+          5
+        ],
+        "passed": 42,
+        "pass_rate": 0.2625,
+        "task_bootstrap_ci": [
+          0.13125,
+          0.40625
+        ],
+        "tokens": 3632559,
+        "tokens_per_solve": 86489.5,
+        "cost_usd": 0.677364317,
+        "mean_seconds": 14.574354268610477,
+        "mean_calls": 4.80625,
+        "compactions": 0,
+        "tool_errors": 0,
+        "failures": {
+          "REASONING": 111,
+          "INFRA": 6,
+          "MAX_TURNS": 1
+        },
+        "families": {
+          "completion": {
+            "n": 40,
+            "passed": 0
+          },
+          "context": {
+            "n": 40,
+            "passed": 38
+          },
+          "memory": {
+            "n": 40,
+            "passed": 4
+          },
+          "recovery": {
+            "n": 40,
+            "passed": 0
+          }
+        }
+      },
+      "held-out": {
+        "runs": 80,
+        "tasks": 16,
+        "repetitions": [
+          5
+        ],
+        "passed": 19,
+        "pass_rate": 0.2375,
+        "task_bootstrap_ci": [
+          0.07500000000000001,
+          0.42500000000000004
+        ],
+        "tokens": 1564031,
+        "tokens_per_solve": 82317.42105263157,
+        "cost_usd": 0.388345209,
+        "mean_seconds": 13.221213802695274,
+        "mean_calls": 4.375,
+        "compactions": 0,
+        "tool_errors": 0,
+        "failures": {
+          "REASONING": 56,
+          "INFRA": 5
+        },
+        "families": {
+          "completion": {
+            "n": 20,
+            "passed": 0
+          },
+          "context": {
+            "n": 20,
+            "passed": 17
+          },
+          "memory": {
+            "n": 20,
+            "passed": 2
+          },
+          "recovery": {
+            "n": 20,
+            "passed": 0
+          }
+        }
+      },
+      "transfer": {
+        "runs": 80,
+        "tasks": 16,
+        "repetitions": [
+          5
+        ],
+        "passed": 22,
+        "pass_rate": 0.275,
+        "task_bootstrap_ci": [
+          0.0875,
+          0.5
+        ],
+        "tokens": 1824749,
+        "tokens_per_solve": 82943.13636363637,
+        "cost_usd": 0.259963939,
+        "mean_seconds": 15.313390219211579,
+        "mean_calls": 4.9125,
+        "compactions": 0,
+        "tool_errors": 0,
+        "failures": {
+          "REASONING": 57,
+          "INFRA": 1
+        },
+        "families": {
+          "completion": {
+            "n": 20,
+            "passed": 0
+          },
+          "context": {
+            "n": 20,
+            "passed": 20
+          },
+          "memory": {
+            "n": 20,
+            "passed": 2
+          },
+          "recovery": {
+            "n": 20,
+            "passed": 0
+          }
+        }
+      }
+    },
+    "standard": {
+      "dev": {
+        "runs": 160,
+        "tasks": 32,
+        "repetitions": [
+          5
+        ],
+        "passed": 64,
+        "pass_rate": 0.4,
+        "task_bootstrap_ci": [
+          0.26875,
+          0.5375
+        ],
+        "tokens": 13124947,
+        "tokens_per_solve": 205077.296875,
+        "cost_usd": 1.850119135,
+        "mean_seconds": 31.55261061042547,
+        "mean_calls": 8.8,
+        "compactions": 40,
+        "tool_errors": 190,
+        "failures": {
+          "MAX_TURNS": 28,
+          "REASONING": 61,
+          "INFRA": 7
+        },
+        "families": {
+          "completion": {
+            "n": 40,
+            "passed": 7
+          },
+          "context": {
+            "n": 40,
+            "passed": 40
+          },
+          "memory": {
+            "n": 40,
+            "passed": 12
+          },
+          "recovery": {
+            "n": 40,
+            "passed": 5
+          }
+        }
+      },
+      "held-out": {
+        "runs": 80,
+        "tasks": 16,
+        "repetitions": [
+          5
+        ],
+        "passed": 26,
+        "pass_rate": 0.325,
+        "task_bootstrap_ci": [
+          0.15,
+          0.5125000000000001
+        ],
+        "tokens": 6172449,
+        "tokens_per_solve": 237401.88461538462,
+        "cost_usd": 1.017478469,
+        "mean_seconds": 29.773790699243545,
+        "mean_calls": 8.4,
+        "compactions": 18,
+        "tool_errors": 94,
+        "failures": {
+          "REASONING": 29,
+          "MAX_TURNS": 18,
+          "INFRA": 7
+        },
+        "families": {
+          "completion": {
+            "n": 20,
+            "passed": 1
+          },
+          "context": {
+            "n": 20,
+            "passed": 18
+          },
+          "memory": {
+            "n": 20,
+            "passed": 5
+          },
+          "recovery": {
+            "n": 20,
+            "passed": 2
+          }
+        }
+      },
+      "transfer": {
+        "runs": 80,
+        "tasks": 16,
+        "repetitions": [
+          5
+        ],
+        "passed": 23,
+        "pass_rate": 0.2875,
+        "task_bootstrap_ci": [
+          0.125,
+          0.4625
+        ],
+        "tokens": 6149876,
+        "tokens_per_solve": 267385.9130434783,
+        "cost_usd": 0.897851036,
+        "mean_seconds": 32.8405364215374,
+        "mean_calls": 8.2625,
+        "compactions": 20,
+        "tool_errors": 80,
+        "failures": {
+          "REASONING": 40,
+          "INFRA": 3,
+          "MAX_TURNS": 14
+        },
+        "families": {
+          "completion": {
+            "n": 20,
+            "passed": 3
+          },
+          "context": {
+            "n": 20,
+            "passed": 12
+          },
+          "memory": {
+            "n": 20,
+            "passed": 6
+          },
+          "recovery": {
+            "n": 20,
+            "passed": 2
+          }
+        }
+      }
+    }
+  },
+  "paired": {
+    "autonomy/dev": {
+      "paired_tasks": 32,
+      "paired_runs": 160,
+      "difference": -0.0625,
+      "ci95": [
+        -0.11875000000000001,
+        -0.0125
+      ]
+    },
+    "autonomy/held-out": {
+      "paired_tasks": 16,
+      "paired_runs": 80,
+      "difference": -0.037500000000000006,
+      "ci95": [
+        -0.1,
+        0.0
+      ]
+    },
+    "autonomy/transfer": {
+      "paired_tasks": 16,
+      "paired_runs": 80,
+      "difference": -0.037500000000000006,
+      "ci95": [
+        -0.1,
+        0.0125
+      ]
+    },
+    "sdk-minimal/dev": {
+      "paired_tasks": 32,
+      "paired_runs": 160,
+      "difference": -0.1375,
+      "ci95": [
+        -0.19375,
+        -0.08750000000000001
+      ]
+    },
+    "sdk-minimal/held-out": {
+      "paired_tasks": 16,
+      "paired_runs": 80,
+      "difference": -0.08750000000000001,
+      "ci95": [
+        -0.15000000000000002,
+        -0.037500000000000006
+      ]
+    },
+    "sdk-minimal/transfer": {
+      "paired_tasks": 16,
+      "paired_runs": 80,
+      "difference": -0.012500000000000008,
+      "ci95": [
+        -0.17500000000000002,
+        0.175
+      ]
+    }
+  }
+}
