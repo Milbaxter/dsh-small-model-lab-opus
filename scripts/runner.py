@@ -79,6 +79,12 @@ def main():
   tasks=[t for t in tasks if counts.setdefault(t['family'],0)<args.per_family and not counts.update({t['family']:counts[t['family']]+1})]
  if args.limit:tasks=tasks[:args.limit]
  if 'external' in args.arms and args.external_profile is None:ap.error('--external-profile is required')
+ if 'external' in args.arms:
+  overlay=args.external_profile/'patch.json'
+  if not overlay.is_file():ap.error('External profile must contain patch.json; refusing to evaluate an unapplied profile')
+  try:valid=isinstance(json.loads(overlay.read_text()),list)
+  except (ValueError,OSError):valid=False
+  if not valid:ap.error('External patch.json must be a JSON Cordis patch array')
  jobs=[];rng=random.Random(20260928)
  # Each task/repetition is a block. Arms randomized within blocks, in the same time window.
  for rep in range(args.k):
