@@ -3,7 +3,8 @@ import argparse,json
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('evidence',type=Path);args=p.parse_args();e=json.loads(args.evidence.read_text())
 def positive_ci(item):
- return item is not None and item.get('complete_k5',False) and item.get('ci95') is not None and item['ci95'][0]>0
+ # Repeated binary trials have much coarser resolution; floating-point dust is not uplift.
+ return item is not None and item.get('complete_k5',False) and item.get('ci95') is not None and item['ci95'][0]>1e-12
 checks={
  'dev_improves':positive_ci(e.get('dev')),
  'heldout_ci_above_zero':positive_ci(e.get('heldout')),
