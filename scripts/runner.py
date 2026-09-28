@@ -19,7 +19,8 @@ def metrics(db,run):
  return dict(zip(['calls','input_tokens','output_tokens','cost_usd'],r))
 
 def single(args,task,arm,rep):
- run=f'{args.sweep}-{task["id"]}-{arm}-{rep}'
+ seed=rep+getattr(args,'seed_offset',0)
+ run=f'{args.sweep}-{task["id"]}-{arm}-{seed}'
  dest=args.state/'runs'/run
  if (dest/'result.json').exists():return json.loads((dest/'result.json').read_text())
  if dest.exists():
@@ -70,7 +71,7 @@ def single(args,task,arm,rep):
  return result
 
 def main():
- ap=argparse.ArgumentParser();ap.add_argument('--bank',type=Path,required=True);ap.add_argument('--sweep',required=True);ap.add_argument('--arms',nargs='+',default=['sdk-minimal','standard','autonomy']);ap.add_argument('--split',nargs='+',default=['dev','held-out','transfer']);ap.add_argument('--k',type=int,default=5);ap.add_argument('--limit',type=int);ap.add_argument('--per-family',type=int);ap.add_argument('--workers',type=int,default=2);ap.add_argument('--external-profile',type=Path)
+ ap=argparse.ArgumentParser();ap.add_argument('--bank',type=Path,required=True);ap.add_argument('--sweep',required=True);ap.add_argument('--arms',nargs='+',default=['sdk-minimal','standard','autonomy']);ap.add_argument('--split',nargs='+',default=['dev','held-out','transfer']);ap.add_argument('--k',type=int,default=5);ap.add_argument('--limit',type=int);ap.add_argument('--seed-offset',type=int,default=0);ap.add_argument('--per-family',type=int);ap.add_argument('--workers',type=int,default=2);ap.add_argument('--external-profile',type=Path)
  args=ap.parse_args();args.root=Path(__file__).resolve().parent.parent;args.state=args.root/'.local';args.state.mkdir(exist_ok=True);args.bank=args.bank.resolve()
  bank=json.loads(args.bank.read_text());tasks=[t for t in bank if t['split'] in args.split]
  if args.per_family:

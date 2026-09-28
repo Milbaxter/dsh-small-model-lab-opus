@@ -16,4 +16,14 @@ class ProtocolTests(unittest.TestCase):
    with g.connection() as c:c.execute("update calls set state='done',cost=.001,input=2,output=3 where run='a'")
    g.reserve('c')
    with self.assertRaisesRegex(ValueError,'BUDGET_LIMIT'):g.reserve('d')
+ def test_retry_shares_primary_inference_budget(self):
+  with tempfile.TemporaryDirectory() as d:
+   os.environ['LAB_STATE']=d
+   spec=importlib.util.spec_from_file_location('gateway',Path(__file__).with_name('gateway.py'));g=importlib.util.module_from_spec(spec);spec.loader.exec_module(g)
+   g.reserve('primary')
+   with g.connection() as c:
+    c.execute('insert into budget_groups values(?,?,?)',('paired',100000,20))
+    c.executemany('insert into budget_members values(?,?)',[('primary','paired'),('retry','paired')])
+    c.execute("update calls set state='done',cost=.01,input=99999,output=1 where run='primary'")
+   with self.assertRaisesRegex(ValueError,'BUDGET_LIMIT'):g.reserve('retry')
 if __name__=='__main__':unittest.main()

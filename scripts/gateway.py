@@ -8,13 +8,17 @@ CAP=18.0 # Stop well before the user's $20 cap, including preflight and uncertai
 MODEL='qwen/qwen3-8b'
 
 def connection():
- c=sqlite3.connect(DB);c.execute('create table if not exists calls (id integer primary key, run text, started real, state text, reserve real, cost real, input int, output int, response_id text)');return c
+ c=sqlite3.connect(DB);c.execute('create table if not exists calls (id integer primary key, run text, started real, state text, reserve real, cost real, input int, output int, response_id text)');c.execute('create table if not exists budget_groups (id text primary key, token_limit int, call_limit int)');c.execute('create table if not exists budget_members (run text primary key, group_id text)');return c
 
 def reserve(run):
  with LOCK, connection() as c:
   total=c.execute("select coalesce(sum(case when state='done' then cost else reserve end),0) from calls").fetchone()[0]
   count,tokens=c.execute('select count(*),coalesce(sum(input+output),0) from calls where run=?',(run,)).fetchone()
-  if total+.04>CAP or count>=20 or tokens>=100000:raise ValueError('BUDGET_LIMIT')
+  group=c.execute('select g.id,g.token_limit,g.call_limit from budget_groups g join budget_members m on m.group_id=g.id where m.run=?',(run,)).fetchone()
+  if group:
+   count,tokens=c.execute('select count(*),coalesce(sum(input+output),0) from calls where run in (select run from budget_members where group_id=?)',(group[0],)).fetchone()
+  token_limit,call_limit=(group[1],group[2]) if group else (100000,20)
+  if total+.04>CAP or count>=call_limit or tokens>=token_limit:raise ValueError('BUDGET_LIMIT')
   return c.execute('insert into calls(run,started,state,reserve) values(?,?,?,?)',(run,time.time(),'pending',.04)).lastrowid
 
 class Handler(http.server.BaseHTTPRequestHandler):

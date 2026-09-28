@@ -4,4 +4,5 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PROFILE="$(cd "$1" && pwd)"
 BANK="${TASK_BANK:-/opt/dsh-tasks-opus/bank.json}"
+python3 "$ROOT/scripts/check_freeze.py" "$(dirname "$BANK")" "$ROOT/evidence/task-bank-lock.json"
 exec python3 "$ROOT/scripts/background.py" --bank "$BANK" --sweep "${SWEEP_NAME:-cross-eval}" --split held-out --arms standard external --external-profile "$PROFILE" --k 5 --workers 2
