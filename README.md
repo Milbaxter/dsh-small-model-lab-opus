@@ -35,4 +35,4 @@ This runs plain standard and the external profile on this experiment's frozen he
 
 ## Limits
 
-Hosted provider weights/quantization cannot be fully pinned. The task bank is synthetic and has repeated templates. No second-model transfer evidence can be claimed under the Qwen3-8B-only constraint. See the protocol and eventual `RESULTS.md` for measured limitations and promotion decisions.
+Hosted provider weights/quantization cannot be fully pinned. The task bank is synthetic and has repeated templates. The planned Qwen3-4B-Instruct-2507 transfer model is absent from the current OpenRouter catalog; no larger model is substituted. See the protocol and eventual `RESULTS.md` for measured limitations and promotion decisions.

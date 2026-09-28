@@ -1,0 +1,16 @@
+{
+  "sdk": "deepseek-harness-sdk==0.1.5rc1",
+  "runtime": "deepseek-harness-runtime-bin==0.1.5rc1",
+  "upstream_release_tag": "dsh-v0.1.5-rc.1",
+  "upstream_release_commit": "183f08e9c6dde7e36cd2318eaee70b0da08fb35e",
+  "harbor": "0.23.0",
+  "model": "qwen/qwen3-8b",
+  "provider": "alibaba",
+  "temperature": 0.6,
+  "top_p": 0.95,
+  "reasoning": false,
+  "seed": "928000 + repetition (0 through 4)",
+  "provider_fallbacks": false,
+  "hosted_weights_revision": null,
+  "hosted_quantization": "unknown"
+}

@@ -1,0 +1,11 @@
+{
+  "runtime": "0.1.5rc1",
+  "autonomy_source_commit": "02c392bb074fbc8600e7f42386f1105258e267be",
+  "standard_tool_count": 25,
+  "autonomy_tool_count": 25,
+  "standard_tool_schema_sha256": "b458a0633cf48b82c00a9ef6f564dcf3a7f749e7c19f8ca0e4fe2faaeec674ea",
+  "autonomy_tool_schema_sha256": "b458a0633cf48b82c00a9ef6f564dcf3a7f749e7c19f8ca0e4fe2faaeec674ea",
+  "standard_policy_occurrences": 0,
+  "autonomy_policy_occurrences": 1,
+  "scope": "Mechanical wire-request check only; no capability claim. Smoke run interrupted by gateway restart, excluded from scored comparisons."
+}

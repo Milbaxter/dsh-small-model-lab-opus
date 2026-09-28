@@ -1,0 +1,25 @@
+{
+  "job": "tb-oracle",
+  "complete": true,
+  "counts": {
+    "n_completed_trials": 4,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0
+  },
+  "arms": {
+    "oracle": {
+      "runs": 4,
+      "tasks": 4,
+      "pass_rate": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "errors": 0,
+      "cost_usd": 0,
+      "tokens": 0
+    }
+  },
+  "paired": {}
+}

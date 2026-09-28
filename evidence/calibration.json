@@ -1,0 +1,49 @@
+{
+  "sweep": "p1-calibration5",
+  "runs": 40,
+  "cost_usd": 0.491042347,
+  "arms": {
+    "standard": {
+      "dev": {
+        "runs": 40,
+        "tasks": 8,
+        "repetitions": [
+          5
+        ],
+        "passed": 17,
+        "pass_rate": 0.425,
+        "task_bootstrap_ci": [
+          0.175,
+          0.7
+        ],
+        "tokens": 3100663,
+        "tokens_per_solve": 182391.9411764706,
+        "cost_usd": 0.491042347,
+        "failures": {
+          "REASONING": 19,
+          "INFRA": 2,
+          "MAX_TURNS": 2
+        },
+        "families": {
+          "completion": {
+            "n": 10,
+            "passed": 1
+          },
+          "context": {
+            "n": 10,
+            "passed": 10
+          },
+          "memory": {
+            "n": 10,
+            "passed": 3
+          },
+          "recovery": {
+            "n": 10,
+            "passed": 3
+          }
+        }
+      }
+    }
+  },
+  "paired": {}
+}

@@ -1,0 +1,17 @@
+{
+  "task_bank_commit": "17d3d4653992dc1f1a1334ac6a5a54f305121f50",
+  "files": {
+    "bank.json": "e66f0aae565d966937a8a40404b49ff556896dd6bb1753b1588bfe3bd0661003",
+    "grader.py": "01c8f8d7b88780afd80739a40ea692f6761a570405a8651efc9500dd12e19847",
+    "build_bank.py": "fcad924160a6ea5cd54fbfbafd3f8f2332a420587a4b20b6a3a6154040896db7",
+    "validate.py": "11a93ad8b2910ca4a732028f360417cfd1a12c77ced20260f157fe46891f6160",
+    "terminal-bench-lock.json": "b22a6986cb7e097b21233a8e669a5f8ed499d1aacfaefc641bfe10cdf4db78c2"
+  },
+  "splits": {
+    "dev": 32,
+    "held-out": 16,
+    "transfer": 16
+  },
+  "frozen_before": "P2 and P3",
+  "terminal_bench_count": 4
+}

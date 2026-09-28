@@ -2,6 +2,7 @@
 """Interleaved, resumable private-bank evaluator. Public reports are aggregate only."""
 import argparse, concurrent.futures, hashlib, json, os, random, selectors, shutil, sqlite3, subprocess, time
 from pathlib import Path
+from archive_run import archive
 
 def receive(proc, seconds=170):
  sel=selectors.DefaultSelector();sel.register(proc.stdout,selectors.EVENT_READ)
@@ -47,15 +48,23 @@ def single(args,task,arm,rep):
  private=dest/'grading.json';private.write_text(json.dumps(task))
  gradecmd=['docker','run','--rm','--network','none','--cpus','1.5','--memory','768m','--pids-limit','64','--cap-drop','ALL','--security-opt','no-new-privileges','--read-only','--tmpfs','/tmp:size=64m','--entrypoint','python','-v',f'{work}:/workspace:ro','-v',f'{private}:/grading.json:ro','-v',f'{args.bank.parent / "grader.py"}:/grader.py:ro','dsh-opus:0.1.5rc1','/grader.py','/grading.json','/workspace']
  try:
-  grade=subprocess.run(gradecmd,capture_output=True,text=True,timeout=15);passed=json.loads(grade.stdout)['passed'] if grade.returncode==0 else False
+  grade=subprocess.run(gradecmd,capture_output=True,text=True,timeout=15);passed=json.loads(grade.stdout.strip().splitlines()[-1])['passed'] if grade.returncode==0 else False
  except Exception:passed=False
  m=metrics(args.state/'spend.sqlite',run)
- tag=None if passed else ('TIMEOUT' if error and 'deadline' in error else 'MAX_TURNS' if error and 'BUDGET_LIMIT' in error else 'INFRA' if error else 'REASONING')
+ trace_text=json.dumps(events)
+ tag=None
+ if not passed:
+  if error and ('BUDGET_LIMIT' in error):tag='MAX_TURNS'
+  elif 'CONTEXT_WINDOW_EXCEEDED' in (error or ''):tag='CONTEXT_OVERFLOW'
+  elif error and ('deadline' in error or 'timed out' in error):tag='TIMEOUT'
+  elif error:tag='INFRA'
+  elif 'IndentationError' in trace_text or 'FS_EDIT_NOT_FOUND' in trace_text:tag='BAD_EDIT'
+  else:tag='REASONING'
  flat=[e for turn in events for e in turn.get('events',[])]
  tool_calls=[e for e in flat if e.get('type')=='tool/call']
  extra={'tool_calls':len(tool_calls),'steps':sum(e.get('type')=='step/start' for e in flat),'compactions':sum(e.get('type')=='compaction/summary' for e in flat),'tool_errors':sum('isError' in str(e) and "'isError': True" in str(e) for e in flat if e.get('type')=='tool/result')}
  result={'run':run,'task':task['id'],'family':task['family'],'split':task['split'],'arm':arm,'rep':rep,'passed':passed,'failure_tag':tag,'error':error,'seconds':time.time()-start,**m,**extra}
- text=json.dumps(result);temp=dest/'result.tmp';temp.write_text(text);temp.rename(dest/'result.json')
+ text=json.dumps(result);temp=dest/'result.tmp';temp.write_text(text);temp.rename(dest/'result.json');archive(dest)
  # IDs are private logs; aggregate summarizer is the only proposer interface for hidden splits.
  print(json.dumps({'completed':run,'passed':passed,'cost':m['cost_usd'],'error':error and error[:200]}),flush=True)
  return result
@@ -84,7 +93,9 @@ def main():
    if spend>=17.75:print('STOP: approaching budget cap',flush=True);break
    pending.append(pool.submit(single,args,task,arm,rep))
    if len(pending)>=args.workers:
-    pending.pop(0).result()
+    done,waiting=concurrent.futures.wait(pending,return_when=concurrent.futures.FIRST_COMPLETED)
+    for future in done:future.result()
+    pending=list(waiting)
   for future in pending:future.result()
 
 if __name__=='__main__':main()
