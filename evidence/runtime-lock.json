@@ -1,12 +1,20 @@
 {
   "sdk": "deepseek-harness-sdk==0.1.5rc1",
-  "runtime_commit": "183f08e9c6dde7e36cd2318eaee70b0da08fb35e",
+  "runtime": "deepseek-harness-runtime-bin==0.1.5rc1",
+  "upstream_release_tag": "dsh-v0.1.5-rc.1",
+  "upstream_release_commit": "183f08e9c6dde7e36cd2318eaee70b0da08fb35e",
+  "harbor": "0.23.0",
+  "model": "qwen/qwen3-8b",
+  "provider": "alibaba",
+  "temperature": 0.6,
+  "top_p": 0.95,
+  "reasoning": false,
+  "seed": "928000 + repetition (0 through 4)",
+  "provider_fallbacks": false,
+  "hosted_weights_revision": null,
+  "hosted_quantization": "unknown",
   "docker_image": "dsh-opus:0.1.5rc1",
   "docker_image_id": "sha256:633a7ad8b90201505f1ad271afc004e2dbd75de8220cf2ca0cc645bd4eca00af",
   "architecture": "amd64",
-  "harbor": "0.23.0",
-  "terminal_bench_commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6",
-  "provider": "alibaba",
-  "model": "qwen/qwen3-8b",
-  "hosted_weights_revision": "unavailable"
+  "terminal_bench_commit": "2fd12b88aafdd04a52c298e3940bcb189f9766d6"
 }
