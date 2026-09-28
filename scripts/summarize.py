@@ -6,13 +6,16 @@ from pathlib import Path
 def bootstrap(values):
  rng=random.Random(9282026)
  if not values:return None
+ values=sorted(values) # The seeded CI must not depend on filesystem traversal order.
  draws=sorted(sum(rng.choices(values,k=len(values)))/len(values) for _ in range(10000))
  return [draws[249],draws[9749]]
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--state',type=Path,default=Path('.local'));p.add_argument('--sweep',required=True);p.add_argument('--control',default='standard');p.add_argument('--dev-details',action='store_true');args=p.parse_args()
- rows=[json.loads(f.read_text()) for f in (args.state/'runs').glob(args.sweep+'-*/result.json')]
+ p=argparse.ArgumentParser();p.add_argument('--state',type=Path,default=Path('.local'));p.add_argument('--sweep',required=True);p.add_argument('--include-sweep',action='append',default=[]);p.add_argument('--control',default='standard');p.add_argument('--dev-details',action='store_true');args=p.parse_args()
+ files={f for sweep in [args.sweep,*args.include_sweep] for f in (args.state/'runs').glob(sweep+'-*/result.json')}
+ rows=[json.loads(f.read_text()) for f in sorted(files)]
  summary={'sweep':args.sweep,'runs':len(rows),'cost_usd':sum(r['cost_usd'] for r in rows),'arms':{},'paired':{}}
+ if args.include_sweep:summary.update(included_sweeps=args.include_sweep,cost_note='Analytical run-cost sum may reuse primary attempts in matched controls. Use the gateway ledger for actual experiment spend.')
  for arm in sorted({r['arm'] for r in rows}):
   summary['arms'][arm]={}
   for split in sorted({r['split'] for r in rows}):

@@ -20,6 +20,8 @@ def run_control(first):
  task=tasks[first['task']];rep=first['rep'];group=f'{opts.sweep}-{task["id"]}-{rep}';dest=state/'runs'/f'{opts.sweep}-{task["id"]}-matched-{rep}'
  if (dest/'result.json').exists():return
  with sqlite3.connect(state/'spend.sqlite') as c:
+  existing=c.execute('select group_id from budget_members where run=?',(first['run'],)).fetchone()
+  assert existing is None or existing[0]==group,'Primary already belongs to a different control budget'
   c.execute('insert or ignore into budget_groups values(?,?,?)',(group,100000,20))
   c.execute('insert or ignore into budget_members values(?,?)',(first['run'],group))
  attempts=[first]

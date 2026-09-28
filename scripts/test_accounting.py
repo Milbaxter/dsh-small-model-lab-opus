@@ -6,6 +6,8 @@ class ProtocolTests(unittest.TestCase):
  def test_bootstrap_keeps_zero_and_positive_differences(self):
   self.assertEqual(bootstrap([0]*8),[0,0])
   for bound in bootstrap([.2]*8):self.assertAlmostEqual(bound,.2)
+ def test_bootstrap_is_independent_of_result_file_order(self):
+  self.assertEqual(bootstrap([.8,-.2,0,.4]),bootstrap([0,.4,.8,-.2]))
  def test_budget_reserves_unknown_cost_and_stops(self):
   with tempfile.TemporaryDirectory() as d:
    os.environ['LAB_STATE']=d
