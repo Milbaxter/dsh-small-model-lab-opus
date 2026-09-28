@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 """Interleaved, resumable private-bank evaluator. Public reports are aggregate only."""
-import argparse, concurrent.futures, hashlib, json, os, random, selectors, shutil, sqlite3, subprocess, time
+import argparse, concurrent.futures, fcntl, hashlib, json, os, random, re, selectors, shutil, sqlite3, subprocess, time
 from pathlib import Path
 from archive_run import archive
+
+def pin_external_sweep(state,sweep,profile,bank,arms,split,k):
+ files={str(p.relative_to(profile)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(profile.rglob('*')) if p.is_file() and '.git' not in p.relative_to(profile).parts}
+ identity={'profile_sha256':hashlib.sha256(json.dumps(files,sort_keys=True).encode()).hexdigest(),'bank_sha256':hashlib.sha256(bank.read_bytes()).hexdigest(),'arms':arms,'split':sorted(split),'k':k}
+ path=state/'manifests'/f'{sweep}.json';path.parent.mkdir(exist_ok=True)
+ if path.exists():
+  if json.loads(path.read_text())!=identity:raise ValueError('Sweep identity changed; choose a new sweep name for this external profile or configuration')
+ else:
+  if any((state/'runs').glob(sweep+'-*/result.json')):raise ValueError('Existing results have no external-profile identity; choose a new sweep name')
+  path.write_text(json.dumps(identity,indent=2)+'\n')
 
 def receive(proc, seconds=170):
  sel=selectors.DefaultSelector();sel.register(proc.stdout,selectors.EVENT_READ)
@@ -73,6 +83,10 @@ def single(args,task,arm,rep):
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--bank',type=Path,required=True);ap.add_argument('--sweep',required=True);ap.add_argument('--arms',nargs='+',default=['sdk-minimal','standard','autonomy']);ap.add_argument('--split',nargs='+',default=['dev','held-out','transfer']);ap.add_argument('--k',type=int,default=5);ap.add_argument('--limit',type=int);ap.add_argument('--seed-offset',type=int,default=0);ap.add_argument('--per-family',type=int);ap.add_argument('--workers',type=int,default=2);ap.add_argument('--external-profile',type=Path)
  args=ap.parse_args();args.root=Path(__file__).resolve().parent.parent;args.state=args.root/'.local';args.state.mkdir(exist_ok=True);args.bank=args.bank.resolve()
+ if not re.fullmatch(r'[A-Za-z0-9_-]{1,64}',args.sweep):ap.error('Sweep names must use 1–64 letters, digits, underscores or hyphens')
+ sweep_lock=(args.state/(args.sweep+'.lock')).open('a')
+ try:fcntl.flock(sweep_lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
+ except BlockingIOError:ap.error('This sweep is already running; wait for it or use a different sweep name')
  bank=json.loads(args.bank.read_text());tasks=[t for t in bank if t['split'] in args.split]
  if args.per_family:
   counts={}
@@ -85,6 +99,8 @@ def main():
   try:valid=isinstance(json.loads(overlay.read_text()),list)
   except (ValueError,OSError):valid=False
   if not valid:ap.error('External patch.json must be a JSON Cordis patch array')
+  try:pin_external_sweep(args.state,args.sweep,args.external_profile,args.bank,args.arms,args.split,args.k)
+  except ValueError as e:ap.error(str(e))
  jobs=[];rng=random.Random(20260928)
  # Each task/repetition is a block. Arms randomized within blocks, in the same time window.
  for rep in range(args.k):

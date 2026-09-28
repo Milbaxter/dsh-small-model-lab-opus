@@ -33,6 +33,8 @@ TASK_BANK=/private/path/bank.json scripts/cross-evaluate.sh /absolute/path/exter
 
 This runs plain standard and the external profile on this experiment's frozen held-out split, k=5, paired and interleaved. Only use the aggregate summary for proposer review. A profile may also be run through the regular driver with `--arms external --external-profile /path` on an authorized split.
 
+The command verifies the frozen bank and requires a valid `patch.json`; it will not silently run an unapplied profile. A private sweep manifest pins the external directory's contents, bank hash, arms, splits and repetition count. Resume with the same sweep name and unchanged profile, or set `SWEEP_NAME` to a new name for a different profile. Concurrent launches of the same sweep are rejected.
+
 ## Limits
 
 Hosted provider weights/quantization cannot be fully pinned. The task bank is synthetic and has repeated templates. The planned Qwen3-4B-Instruct-2507 transfer model is absent from the current OpenRouter catalog; no larger model is substituted. See the protocol and eventual `RESULTS.md` for measured limitations and promotion decisions.
