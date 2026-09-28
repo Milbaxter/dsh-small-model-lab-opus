@@ -22,7 +22,7 @@ def main():
    for r in rr:groups[r['task']].append(int(r['passed']))
    rates=[sum(v)/len(v) for v in groups.values()]
    solved=sum(r['passed'] for r in rr);tok=sum(r['input_tokens']+r['output_tokens'] for r in rr)
-   summary['arms'][arm][split]={'runs':len(rr),'tasks':len(groups),'repetitions':sorted(set(len(v) for v in groups.values())),'passed':solved,'pass_rate':solved/len(rr),'task_bootstrap_ci':bootstrap(rates),'tokens':tok,'tokens_per_solve':tok/solved if solved else None,'cost_usd':sum(r['cost_usd'] for r in rr),'failures':dict(collections.Counter(r['failure_tag'] for r in rr if not r['passed'])),'families':{f:{'n':sum(r['family']==f for r in rr),'passed':sum(r['passed'] for r in rr if r['family']==f)} for f in sorted({r['family'] for r in rr})}}
+   summary['arms'][arm][split]={'runs':len(rr),'tasks':len(groups),'repetitions':sorted(set(len(v) for v in groups.values())),'passed':solved,'pass_rate':solved/len(rr),'task_bootstrap_ci':bootstrap(rates),'tokens':tok,'tokens_per_solve':tok/solved if solved else None,'cost_usd':sum(r['cost_usd'] for r in rr),'mean_seconds':statistics.mean(r['seconds'] for r in rr),'mean_calls':statistics.mean(r['calls'] for r in rr),'compactions':sum(r.get('compactions',0) for r in rr),'tool_errors':sum(r.get('tool_errors',0) for r in rr),'failures':dict(collections.Counter(r['failure_tag'] for r in rr if not r['passed'])),'families':{f:{'n':sum(r['family']==f for r in rr),'passed':sum(r['passed'] for r in rr if r['family']==f)} for f in sorted({r['family'] for r in rr})}}
    if arm!=args.control:
     ctrl={(r['task'],r['rep']):r for r in rows if r['arm']==args.control and r['split']==split}
     pairs=collections.defaultdict(list)

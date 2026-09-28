@@ -18,12 +18,12 @@ for arm in sorted({r['arm'] for r in rows}):
  rr=[r for r in rows if r['arm']==arm];group=collections.defaultdict(list)
  for r in rr:group[r['task']].append(r['passed'])
  rates=[sum(v)/len(v) for v in group.values()]
- output['arms'][arm]={'runs':len(rr),'tasks':len(group),'pass_rate':sum(r['passed'] for r in rr)/len(rr),'ci95':bootstrap(rates),'errors':sum(r['error'] for r in rr),'cost_usd':sum(r['cost'] for r in rr),'tokens':sum(r['tokens'] for r in rr)}
+ output['arms'][arm]={'runs':len(rr),'tasks':len(group),'repetitions':sorted(set(len(v) for v in group.values())),'complete_k5':len(group)==4 and all(len(v)==5 for v in group.values()),'pass_rate':sum(r['passed'] for r in rr)/len(rr),'ci95':bootstrap(rates),'errors':sum(r['error'] for r in rr),'cost_usd':sum(r['cost'] for r in rr),'tokens':sum(r['tokens'] for r in rr)}
  if arm!='standard':
   control={(r['task'],r['rep']):r for r in rows if r['arm']=='standard'};pairs=collections.defaultdict(list)
   for r in rr:
    b=control.get((r['task'],r['rep']))
    if b:pairs[r['task']].append(r['passed']-b['passed'])
   diffs=[sum(v)/len(v) for v in pairs.values()]
-  if diffs:output['paired'][arm]={'tasks':len(diffs),'difference':sum(diffs)/len(diffs),'ci95':bootstrap(diffs)}
+  if diffs:output['paired'][arm]={'tasks':len(diffs),'paired_runs':sum(map(len,pairs.values())),'complete_k5':len(diffs)==4 and all(len(v)==5 for v in pairs.values()),'difference':sum(diffs)/len(diffs),'ci95':bootstrap(diffs)}
 print(json.dumps(output,indent=2))
