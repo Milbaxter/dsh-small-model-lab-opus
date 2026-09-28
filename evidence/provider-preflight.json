@@ -1,0 +1,211 @@
+{
+  "started_utc": "2026-09-28T08:01:42.363680+00:00",
+  "model": "qwen/qwen3-8b",
+  "endpoint_catalog": {
+    "data": {
+      "id": "qwen/qwen3-8b",
+      "name": "Qwen: Qwen3 8B",
+      "created": 1745876632,
+      "description": "Qwen3-8B is a dense 8.2B parameter causal language model from the Qwen3 series, designed for both reasoning-heavy tasks and efficient dialogue. It supports seamless switching between \"thinking\" mode for math,...",
+      "architecture": {
+        "tokenizer": "Qwen3",
+        "instruct_type": "qwen3",
+        "modality": "text->text",
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ]
+      },
+      "endpoints": [
+        {
+          "name": "Alibaba | qwen/qwen3-8b-04-28",
+          "model_id": "qwen/qwen3-8b",
+          "model_name": "Qwen: Qwen3 8B",
+          "context_length": 131072,
+          "pricing": {
+            "prompt": "0.000000117",
+            "completion": "0.000000455",
+            "discount": 0
+          },
+          "provider_name": "Alibaba",
+          "tag": "alibaba",
+          "quantization": "unknown",
+          "max_completion_tokens": 8192,
+          "max_prompt_tokens": 98304,
+          "supported_parameters": [
+            "reasoning",
+            "include_reasoning",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "presence_penalty",
+            "response_format",
+            "tools",
+            "tool_choice",
+            "top_k",
+            "frequency_penalty",
+            "stop"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": false,
+            "function": false
+          },
+          "status": 0,
+          "uptime_last_30m": 99.79421377557196,
+          "uptime_last_5m": 99.70523212969786,
+          "uptime_last_1d": 99.92780946471613,
+          "supports_implicit_caching": false,
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "latency_last_30m": {
+            "p50": 744,
+            "p75": 838,
+            "p90": 944.9000000000005,
+            "p99": 16404.280000000028
+          },
+          "throughput_last_30m": {
+            "p50": 54,
+            "p75": 61,
+            "p90": 64,
+            "p99": 72
+          },
+          "perf_last_30m_by_workload": {
+            "text_generation": {
+              "latency": {
+                "p50": 744,
+                "p75": 838,
+                "p90": 944.9000000000005,
+                "p99": 16404.280000000028
+              },
+              "throughput": {
+                "p50": 54,
+                "p75": 61,
+                "p90": 64,
+                "p99": 72
+              },
+              "request_count": 8243
+            }
+          }
+        }
+      ]
+    }
+  },
+  "attempts": [
+    {
+      "provider": "alibaba",
+      "http_status": 200,
+      "request": {
+        "model": "qwen/qwen3-8b",
+        "provider": {
+          "only": [
+            "alibaba"
+          ],
+          "allow_fallbacks": false
+        },
+        "temperature": 0,
+        "top_p": 1,
+        "max_tokens": 256,
+        "reasoning": {
+          "enabled": false
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Call the echo tool with text set to probe-ok. Do not answer with text. /no_think"
+          }
+        ],
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "echo",
+              "description": "Echo a string.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        ],
+        "tool_choice": "auto"
+      },
+      "response": {
+        "id": "gen-1790582522-vXay6Tjbk2riuyXBwuwY",
+        "object": "chat.completion",
+        "created": 1790582522,
+        "model": "qwen/qwen3-8b",
+        "provider": "Alibaba",
+        "system_fingerprint": null,
+        "service_tier": null,
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "tool_calls",
+            "native_finish_reason": "tool_calls",
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "reasoning": null,
+              "tool_calls": [
+                {
+                  "type": "function",
+                  "index": 0,
+                  "id": "call_a39d16fb4e144b8d84208a",
+                  "function": {
+                    "name": "echo",
+                    "arguments": "{\"text\": \"probe-ok\"}"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 173,
+          "completion_tokens": 19,
+          "total_tokens": 192,
+          "cost": 2.8886e-05,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 2.8886e-05,
+            "upstream_inference_prompt_cost": 2.0241e-05,
+            "upstream_inference_completions_cost": 8.645e-06
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      },
+      "passed": true,
+      "cost_reported": 2.8886e-05
+    }
+  ],
+  "passed": true,
+  "reported_cost_usd": 2.8886e-05,
+  "selected_provider": "alibaba",
+  "finished_utc": "2026-09-28T08:01:43.271653+00:00"
+}

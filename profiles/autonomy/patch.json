@@ -1,0 +1,10 @@
+[
+  {
+    "insert": [
+      {
+        "id": "optimal-autonomy-policy",
+        "name": "file:///profile/autonomy.mjs"
+      }
+    ]
+  }
+]

@@ -1,36 +1,38 @@
-# DSH Small-Model Lab
+# DSH small-model lab — independent experiment
 
-**Cheap, honest, iterative testing of DeepSeek Harness (DSH) plugin setups, using a small Qwen model as the test subject.**
+A budget-capped experiment testing whether DSH profiles improve Qwen3-8B task completion, recovery, memory and context handling. The repository name follows the requested `-opus` suffix; this run's proposer is Codex.
 
-Status: **plan only**. Nothing here has been built or run yet.
+Implementation and experiment code are public. **All tasks, graders, hidden tests, model traces and per-task outcomes live separately in a private repository / private server state.** No capability result is claimed until measured.
 
-## Why
+- [Preregistered protocol](PROTOCOL.md)
+- Original plan: [PLAN](docs/PLAN.md), [TASKS](docs/TASKS.md), [LOOP](docs/LOOP.md), [INFRA](docs/INFRA.md)
+- [Provider preflight evidence](evidence/provider-preflight.json)
 
-Earlier work in [optimal-deepseek-harness-setup](https://github.com/Milbaxter/optimal-deepseek-harness-setup) built plugins and a 12-hour Astra improvement cycle, but explicitly had **no benchmark**: there is still no evidence the autonomy-policy plugin beats unmodified DSH. Two things blocked measurement:
+## Execution
 
-1. **Ceiling.** The frontier/DeepSeek base model with the default harness already scores high, leaving little room to see harness improvements.
-2. **Cost.** Every evaluation iteration on a large model was expensive.
+Runtime: `deepseek-harness-sdk==0.1.5rc1`, Docker, Python 3.12. Model: `qwen/qwen3-8b` through the DSH custom OpenAI-compatible adapter. Provider pinned to `alibaba`; temperature 0.6, top_p 0.95, reasoning disabled; paired repetition seeds. The preflight uses temperature 0, separately from evaluations.
 
-A small local model (Qwen3-8B) fixes both. It fails often enough that harness changes become visible, and per-token cost on our own GPU is effectively zero. Weak models are also "noisy channels" (Shannon): they expose vague tool descriptions, ambiguous schemas and missing recovery logic that a frontier model silently compensates for.
+Keep `OPENROUTER_API_KEY` in a mode-0600, ignored `.env` on the server. Build the actor image with `docker build -t dsh-opus:0.1.5rc1 .`. Run `python3 scripts/launch_gateway.py` to launch the accounting proxy on the Docker bridge only. Allow Docker bridge clients to TCP 18943 if the host firewall blocks them; do not open this port publicly.
 
-**Goal:** a self-improving loop for DSH plugins that improves *general* capability (task completion, recovery, memory, context handling) at acceptable cost, not benchmark scores.
+Start/resume a sweep:
 
-## Documents
+```sh
+python3 scripts/background.py --bank /private/path/bank.json --sweep baseline --k 5
+python3 scripts/summarize.py --sweep baseline
+```
 
-| Doc | What it covers |
-|---|---|
-| [docs/PLAN.md](docs/PLAN.md) | The full plan: architecture, anti-overfitting gates, build phases, milestones |
-| [docs/INFRA.md](docs/INFRA.md) | Hardware choice (UpCloud L40S), model serving, DSH provider wiring, cost budget |
-| [docs/TASKS.md](docs/TASKS.md) | Task bank design: families, splits, difficulty calibration, grading |
-| [docs/LOOP.md](docs/LOOP.md) | The improvement loop: proposer, mutation types, promotion gate, records |
+The driver alternates randomized arms within task/repetition blocks and saves each completed result atomically. Logs and SQLite cost accounting are under `.local/` and never committed. The Mac control machine runs `caffeinate -dimsu` while sweeps are active. The gateway hard-stops at $18 reserved/reported cost, below the user's $20 cap.
 
-## Builds on
+## Cross-evaluation
 
-- [optimal-deepseek-harness-setup](https://github.com/Milbaxter/optimal-deepseek-harness-setup): plugin format, Astra review rubric, 12-hour cycle
-- [agent-intelligence-lab](https://github.com/Milbaxter/agent-intelligence-lab): Pareto metrics, statistical keep/drop rule, tiered evaluation funnel
-- [harness-watch](https://github.com/Milbaxter/harness-watch): benchmarking protocol, failure taxonomy, held-out and matched-budget controls
-- [harness-intelligence-improvements](https://github.com/Milbaxter/harness-intelligence-improvements): experiment record template, evidence standards
+An external profile is a directory containing `patch.json` (a Cordis patch array) plus any referenced plugin files. It is mounted read-only at `/profile`; plugin paths use `file:///profile/name.mjs`. The underlying unmodified full SDK profile and provider/permission/sandbox settings are fixed by the runner.
 
-## License
+```sh
+TASK_BANK=/private/path/bank.json scripts/cross-evaluate.sh /absolute/path/external-profile
+```
 
-MIT
+This runs plain standard and the external profile on this experiment's frozen held-out split, k=5, paired and interleaved. Only use the aggregate summary for proposer review. A profile may also be run through the regular driver with `--arms external --external-profile /path` on an authorized split.
+
+## Limits
+
+Hosted provider weights/quantization cannot be fully pinned. The task bank is synthetic and has repeated templates. No second-model transfer evidence can be claimed under the Qwen3-8B-only constraint. See the protocol and eventual `RESULTS.md` for measured limitations and promotion decisions.
