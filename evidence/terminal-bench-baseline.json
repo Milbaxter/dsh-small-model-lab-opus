@@ -1,0 +1,95 @@
+{
+  "job": "tb-baseline",
+  "complete": true,
+  "counts": {
+    "n_completed_trials": 60,
+    "n_errored_trials": 0,
+    "n_running_trials": 0,
+    "n_pending_trials": 0
+  },
+  "arms": {
+    "autonomy": {
+      "runs": 20,
+      "tasks": 4,
+      "repetitions": [
+        5
+      ],
+      "complete_k5": true,
+      "pass_rate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "errors": 0,
+      "actor_finishes": {
+        "budget_stop": 10,
+        "normal_finish": 9,
+        "provider_rate_limit": 1
+      },
+      "cost_usd": 0.224467166,
+      "tokens": 1526266
+    },
+    "sdk-minimal": {
+      "runs": 20,
+      "tasks": 4,
+      "repetitions": [
+        5
+      ],
+      "complete_k5": true,
+      "pass_rate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "errors": 0,
+      "actor_finishes": {
+        "budget_stop": 6,
+        "normal_finish": 14
+      },
+      "cost_usd": 0.088027745,
+      "tokens": 644081
+    },
+    "standard": {
+      "runs": 20,
+      "tasks": 4,
+      "repetitions": [
+        5
+      ],
+      "complete_k5": true,
+      "pass_rate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "errors": 0,
+      "actor_finishes": {
+        "normal_finish": 13,
+        "budget_stop": 7
+      },
+      "cost_usd": 0.152937603,
+      "tokens": 1250713
+    }
+  },
+  "paired": {
+    "autonomy": {
+      "tasks": 4,
+      "paired_runs": 20,
+      "complete_k5": true,
+      "difference": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "sdk-minimal": {
+      "tasks": 4,
+      "paired_runs": 20,
+      "complete_k5": true,
+      "difference": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ]
+    }
+  }
+}
