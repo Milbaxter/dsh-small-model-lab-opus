@@ -17,10 +17,13 @@ with sqlite3.connect(args.state/'spend.sqlite') as c:
   label=mapping.get(run,'terminal-bench/unmapped' if run.startswith('tb-') else 'setup-or-unfinished')
   g=groups[label];g['calls']+=1;g['confirmed_usd']+=cost or 0;g['unresolved_reserve_usd']+=reserve if state!='done' else 0;g['input_tokens']+=inp or 0;g['output_tokens']+=out or 0;g['states'][state]+=1
  for g in groups.values():g['conservative_usd']=g['confirmed_usd']+g['unresolved_reserve_usd']
-audit={'recorded_requests':0,'request_pin_violations':0,'successful_response_models':collections.Counter(),'successful_response_providers':collections.Counter(),'http_statuses':collections.Counter()}
+audit={'recorded_requests':0,'unreadable_records':0,'request_pin_violations':0,'successful_response_models':collections.Counter(),'successful_response_providers':collections.Counter(),'http_statuses':collections.Counter()}
 for f in (args.state/'wire').glob('*/*.json'):
- d=json.loads(f.read_text());q=d['request'];r=d['response'];status=d['status'];audit['recorded_requests']+=1;audit['http_statuses'][status]+=1
+ try:d=json.loads(f.read_text())
+ except (OSError,ValueError):audit['unreadable_records']+=1;continue
+ q=d['request'];r=d['response'];status=d['status'];audit['recorded_requests']+=1;audit['http_statuses'][status]+=1
  valid=q.get('model')=='qwen/qwen3-8b' and q.get('provider')=={'only':['alibaba'],'allow_fallbacks':False} and q.get('temperature')==.6 and q.get('top_p')==.95 and q.get('reasoning')=={'enabled':False} and q.get('max_tokens',99999)<=2048
+ suffix=f.parent.name.rsplit('-',1)[-1];valid=valid and q.get('seed')==928000+(int(suffix) if suffix.isdigit() else 0)
  audit['request_pin_violations']+=not valid
  if status==200:
   audit['successful_response_models'][r.get('model','unreported')]+=1
