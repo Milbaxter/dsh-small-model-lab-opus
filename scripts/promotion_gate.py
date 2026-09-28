@@ -10,7 +10,7 @@ checks={
  'heldout_ci_above_zero':positive_ci(e.get('heldout')),
  'transfer_no_regression':bool(e.get('transfer',{}).get('complete_k5') and e['transfer'].get('difference',-1)>=0),
  'second_model_no_regression':bool(e.get('second_model',{}).get('complete_k5') and e['second_model'].get('difference',-1)>=0),
- 'matched_budget_control':positive_ci(e.get('matched_control')),
+ 'matched_budget_control':positive_ci(e.get('matched_control')) and e['matched_control'].get('control_complete') is True,
  'tokens_per_solve_limit':isinstance(e.get('tokens_per_solve_ratio'),(int,float)) and e['tokens_per_solve_ratio']<=1.25,
  'leakage_check':e.get('leakage_passed') is True,
  'terminal_bench_no_regression':bool(e.get('terminal_bench',{}).get('complete_k5') and e['terminal_bench'].get('difference',-1)>=0),
